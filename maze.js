@@ -9,7 +9,9 @@ let video;
 let handPose, detections = [];
 let options = { maxHands: 1, flipped: false };
 
-let mazes;
+let mazes = [];
+let blured = true;
+let game = document.getElementById("game");
 
 // ---------------------- Maze Class ----------------------
 class Maze {
@@ -21,7 +23,11 @@ class Maze {
         this.player = { r: 1, c: 1 };
     }
 
-    display() {
+    getDistance(c, r) {
+        return Math.sqrt((this.player.c - c) ** 2 + (this.player.r - r) ** 2);
+    }
+
+    display(blured = true) {
         push();
         translate(0, 0);
         stroke(50);
@@ -32,13 +38,15 @@ class Maze {
                 let x = c * this.cellSize;
                 let y = r * this.cellSize;
 
-                if (this.map[r][c] === 1) {
-                    fill(120);
+                if (this.getDistance(c, r) > 3 && blured) {
+                    fill("#ffffff12");
+                } else if (this.map[r][c] === 1) {
+                    fill("#edf646ff");
                 } else if (this.map[r][c] === 2) {
-                    fill(0, 200, 0);
+                    fill("blue");
                 }
                 else {
-                    fill(240);
+                    fill("#ffffff60");
                 }
                 rect(x, y, this.cellSize, this.cellSize);
             }
@@ -73,84 +81,35 @@ class Maze {
             this.player.r = nr;
             this.player.c = nc;
             console.log("You reached the goal!");
+            game.innerText = "You Win!";
             finished = true;
             replayButton.disabled = false;
             nextLevelButton.disabled = false;
+            blured = false;
         }
     }
+
+
 }
-
-let map1 = [
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 1, 1, 0, 1, 0, 1, 0, 1],
-    [1, 0, 0, 1, 1, 1, 0, 1, 1, 1],
-    [1, 1, 0, 1, 0, 1, 1, 1, 0, 1],
-    [1, 0, 0, 1, 0, 0, 0, 0, 0, 1],
-    [1, 0, 1, 1, 0, 1, 1, 1, 0, 1],
-    [1, 0, 0, 0, 0, 1, 0, 0, 0, 1],
-    [1, 0, 1, 0, 1, 1, 1, 2, 0, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-];
-
-let map2 = [
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1],
-    [1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1],
-    [1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1],
-    [1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1],
-    [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
-    [1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1],
-    [1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
-    [1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-];
-
-let map3 = [
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
-    [1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1],
-    [1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1],
-    [1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1],
-    [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
-    [1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1],
-    [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1],
-    [1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1],
-    [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1],
-    [1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1],
-    [1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1],
-    [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1],
-    [1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1],
-    [1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
-    [1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
-    [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1],
-    [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1]
-];
-maze1 = new Maze(10, 10, 40, map1);
-maze2 = new Maze(15, 15, 25, map2);
-maze3 = new Maze(20, 20, 20, map3);
 
 // ---------------------- Replay & Next Level Buttons ----------------------
 replayButton.onclick = function () {
     // Replay
+    blured = true;
     finished = false;
     game_maze.player = { r: 1, c: 1 };
     replayButton.disabled = true;
     nextLevelButton.disabled = true;
+    game.innerText = "Game " + (mazes.indexOf(game_maze) + 1).toString();
 };
 
 nextLevelButton.onclick = function () {
     // Next Level
+    blured = true;
     let currentIndex = mazes.indexOf(game_maze);
     let nextIndex = (currentIndex + 1) % mazes.length;
     game_maze = mazes[nextIndex];
+    game.innerText = "Game " + (mazes.indexOf(game_maze) + 1).toString();
     game_maze.player = { r: 1, c: 1 };
     finished = false;
     replayButton.disabled = true;
@@ -166,7 +125,11 @@ function preload() {
 function setup() {
     createCanvas(900, 500);
     // ---- Create Maze on the left ----
-    mazes = [maze1, maze2, maze3];
+    // mazes = [maze1, maze2, maze3];
+    maps.forEach(m => {
+        console.log(m);
+        mazes.push(new Maze(m.length, m[0].length, Math.floor(450 / m.length), m));
+    });
     game_maze = mazes[0];
     // ---- Camera & Handpose on the right ----
     video = createCapture(VIDEO);
@@ -185,7 +148,7 @@ function draw() {
     background("#0e3f5e");
 
     // Left area: Maze
-    game_maze.display();
+    game_maze.display(blured);
     // Right area: Camera video (mirrored)
     push();
     translate(1000 + video.width, 0);
@@ -227,8 +190,8 @@ function drawKeypoints(detections) {
 
 // ---------------------- Keyboard control test ----------------------
 function keyPressed() {
-    if (key === "W" || key === "w") maze.move("UP");
-    if (key === "S" || key === "s") maze.move("DOWN");
-    if (key === "A" || key === "a") maze.move("LEFT");
-    if (key === "D" || key === "d") maze.move("RIGHT");
+    if (key === "ArrowUp" || key === "w") game_maze.move("UP");
+    if (key === "ArrowDown" || key === "s") game_maze.move("DOWN");
+    if (key === "ArrowLeft" || key === "a") game_maze.move("LEFT");
+    if (key === "ArrowRight" || key === "d") game_maze.move("RIGHT");
 }

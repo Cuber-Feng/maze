@@ -7,6 +7,21 @@ body {
     color: white;
 }
 
+header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 20px;
+    gap: 2rem;
+}
+
+#game {
+    font-family: 'Press Start 2P', sans-serif;
+    font-size: 24px;
+    text-align: center;
+    margin: 20px;
+}
+
 button {
     background: linear-gradient(145deg, #4f54e4, #221fbb);
     border: 2px solid #fff5;
